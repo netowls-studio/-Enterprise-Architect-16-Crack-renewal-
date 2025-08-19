@@ -1,0 +1,29 @@
+name: Qt4 Build
+
+on:
+  push:
+    branches: [ master, QT ]
+
+jobs:
+  build:
+    name: Build
+    runs-on: windows-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Setup dependencies
+        run: |
+          choco install mingw -y
+          choco install qt-4.*-x86 -y
+
+      - name: Compile
+        run: |
+          qmake -qt=qt4 EA.pro
+          nmake
+
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: build-artifacts
+          path: build
